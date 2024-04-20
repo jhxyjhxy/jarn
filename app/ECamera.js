@@ -1,10 +1,30 @@
 import { Camera, CameraType } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import * as MediaLibrary from 'expo-media-library';
+
 
 export default function App() {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [cameraRef, setCameraRef] = useState(null);
+
+
+  const takePicture = async () => {
+    if (cameraRef) {
+      const { uri } = await cameraRef.takePictureAsync();
+      if (uri) {
+        // Save the picture to the device's media library
+        // await MediaLibrary.saveToLibraryAsync(uri); // uncomment if you want every pic to be saved to device library
+        console.log(uri);
+        alert('Picture saved to your photos :3');
+        // get the data from the photo
+        const result = await fetch(`file://${uri}`)
+        const data = await result.blob();
+        console.log(data);
+      }
+    }
+  };
 
   if (!permission) {
     // Camera permissions are still loading
@@ -27,9 +47,16 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+      <Camera style={styles.camera} type={type} ref={(ref) => {
+          setCameraRef(ref);
+        }}>
+        <View style={styles.takeButtonContainer}>
+          <TouchableOpacity style={styles.takeButton} onPress={takePicture}>
+            <Text style={styles.text}>Snap!</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.flipButtonContainer}>
+          <TouchableOpacity style={styles.flipButton} onPress={toggleCameraType}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
         </View>
@@ -45,16 +72,31 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
   },
-  buttonContainer: {
+  takeButtonContainer: {
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'transparent',
     margin: 64,
   },
-  button: {
+  takeButton: {
     flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 50,
+  },
+  flipButtonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64,
+  },
+  flipButton: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 50,
   },
   text: {
     fontSize: 24,
