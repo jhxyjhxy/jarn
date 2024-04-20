@@ -9,6 +9,43 @@ const userSchema = new mongoose.Schema({
   email: String,
 });
 
+// Define the Photo schema
+const photoSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    imageUrl: String,
+    uploadedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    uploadedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  });
+  
+  // Create the Photo model
+  const Photo = mongoose.model('Photo', photoSchema);
+  
+  const uploadPhotoUrl = async (title, description, imageUrl, userId) => {
+    try {
+      const newPhoto = new Photo({
+        title,
+        description,
+        imageUrl,
+        uploadedBy: userId,
+        uploadedAt: new Date(),
+      });
+      await newPhoto.save();
+      return newPhoto;
+    } catch (error) {
+      console.error('Error uploading photo URL:', error);
+      throw error;
+    }
+  };
+  
+
 // Create the User model
 const User = mongoose.model('User', userSchema);
 
@@ -42,8 +79,12 @@ const signup = async (username, password, email) => {
     //const {username, email, password} = req.body;
     
     let existingUser;
+
+    console.log(username);
+    console.log(password);
+    console.log(email);
     try {
-        existingUser = await User.findOne({email});
+        existingUser = await User.findOne({username});
     } catch (err) {
         return console.log(err);
     } if (existingUser) {
@@ -68,24 +109,24 @@ const signup = async (username, password, email) => {
 };
 
 const login = async (username, password) => {
-    
     let existingUser;
-    //console.log("hello?");
     try {
-        existingUser = await User.findOne({username});
+      existingUser = await User.findOne({ username });
     } catch (err) {
-        return console.log(err);
-    } if (!existingUser) {
-        console.log('User not found:', error);
-        throw error;
+      return console.log(err);
+    }
+    if (!existingUser) {
+      console.log('User not found:', error);
+      throw error;
     }
     const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
     console.log(isPasswordCorrect);
-    if(!isPasswordCorrect) {
-        console.log('Incorrect Password:', error);
-        throw error;
-    } return isPasswordCorrect;
-}
+    if (!isPasswordCorrect) {
+      console.log('Incorrect Password:', error);
+      throw error;
+    }
+    return existingUser;
+  };
 
 
 
@@ -93,5 +134,7 @@ module.exports = {
   connectDB,
   readUsers,
     signup, 
-    login
+    login,
+    uploadPhotoUrl,
+    User
 };

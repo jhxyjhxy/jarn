@@ -3,10 +3,12 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login} = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl} = require('./mongo');
 require('dotenv').config();
 
 // Create an Express app
@@ -16,6 +18,18 @@ connectDB();
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './public/pics'); // Directory to store uploaded files
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+  },
+});
+const upload = multer({ storage });
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
@@ -26,19 +40,27 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
+//PHOTOS
+app.post('/photos', authenticateUser, async (req, res) => {
+  try {
+    const { title, description, imageUrl } = req.body;
+    const uploadedPhoto = await uploadPhotoUrl(title, description, imageUrl, req.user._id);
+    res.json({ message: 'Photo URL uploaded successfully', photo: uploadedPhoto });
+  } catch (error) {
+    console.error('Error uploading photo URL:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 //LOGIN
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    //console.log(username);
-    //console.log(password);
     const user = await login(username, password);
-    console.log('hi', user);
+    //console.log('hi', user);
     if (user) {
-      
-      //const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-      res.json({ message: 'Login successful'});
+      const token = jwt.sign({id: user._id, username: user.username }, process.env.JWT_SECRET);
+      res.json({ message: 'Login successful', token });
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
     }
@@ -51,7 +73,7 @@ app.post('/login', async (req, res) => {
 //SIGNUP + Make an account
 app.post('/signup', async (req, res) => {
   try {
-    console.log("hi", req.body.username);
+    //console.log("hi", req.body.username);
     const username = req.body.username;
     const password = req.body.password;
     const email = req.body.email;
@@ -102,8 +124,18 @@ app.get('/gemini/:topic', async (req, res) => {
   res.send(text);
 });
 
+app.post('/pic', upload.single('photo'), (req, res) => {
+  // `file.fieldname` refers to the 'name' attribute of the file input
+  console.log('Uploaded field name:', req.file.fieldname, req.file.filename);
+
+  res.json({
+    message: 'File uploaded successfully',
+    filename: req.file.filename,
+  });
+});
+
 // Start the server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
