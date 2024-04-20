@@ -4,7 +4,6 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Location from 'expo-location';
 import axios from 'axios';
 // import * as MediaLibrary from 'expo-media-library';
-import axios from 'axios';
 
 
 
@@ -73,10 +72,33 @@ export default function App() {
 
       // Reverse geocoding
       axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`)
-        .then(response => {
+        .then((response) => {
           console.log(response.data);
           setCountry(response.data.address.country);
           setTown(response.data.address.city);
+
+          try {
+            axios.post('https://a5fc-164-67-154-29.ngrok-free.app/location', 
+              response.data
+            ).then(
+              (response2) => {
+                console.log(response2.status);
+                if (response2.status == 200) {
+                  // Image uploaded successfully
+                  console.log('Location data sent successfully');
+                } 
+                else {
+                  // Error uploading image
+                  console.error('Error sending location data');
+                }
+              } 
+            );
+          } 
+          
+          catch (error) {
+            console.error('Error uploading image:', error);
+          }
+
         })
         .catch(error => {
           console.error('Error fetching town:', error);
