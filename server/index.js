@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { authenticateUser } = require('./middleware');
@@ -16,6 +18,18 @@ connectDB();
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './public/pics'); // Directory to store uploaded files
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+  },
+});
+const upload = multer({ storage });
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
@@ -102,8 +116,18 @@ app.get('/gemini/:topic', async (req, res) => {
   res.send(text);
 });
 
+app.post('/pic', upload.single('photo'), (req, res) => {
+  // `file.fieldname` refers to the 'name' attribute of the file input
+  console.log('Uploaded field name:', req.file.fieldname, req.file.filename);
+
+  res.json({
+    message: 'File uploaded successfully',
+    filename: req.file.filename,
+  });
+});
+
 // Start the server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
