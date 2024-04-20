@@ -3,10 +3,13 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
+<<<<<<< Updated upstream
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
+=======
+>>>>>>> Stashed changes
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login} = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl} = require('./mongo');
 require('dotenv').config();
 
 // Create an Express app
@@ -26,19 +29,27 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
+//PHOTOS
+app.post('/photos', authenticateUser, async (req, res) => {
+  try {
+    const { title, description, imageUrl } = req.body;
+    const uploadedPhoto = await uploadPhotoUrl(title, description, imageUrl, req.user._id);
+    res.json({ message: 'Photo URL uploaded successfully', photo: uploadedPhoto });
+  } catch (error) {
+    console.error('Error uploading photo URL:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 //LOGIN
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    //console.log(username);
-    //console.log(password);
     const user = await login(username, password);
-    console.log('hi', user);
+    //console.log('hi', user);
     if (user) {
-      
-      //const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-      res.json({ message: 'Login successful'});
+      const token = jwt.sign({id: user._id, username: user.username }, process.env.JWT_SECRET);
+      res.json({ message: 'Login successful', token });
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
     }
@@ -51,7 +62,7 @@ app.post('/login', async (req, res) => {
 //SIGNUP + Make an account
 app.post('/signup', async (req, res) => {
   try {
-    console.log("hi", req.body.username);
+    //console.log("hi", req.body.username);
     const username = req.body.username;
     const password = req.body.password;
     const email = req.body.email;
