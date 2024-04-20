@@ -8,10 +8,14 @@ import axios from 'axios';
 
 
 export default function App() {
+  // camera stuff
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [cameraRef, setCameraRef] = useState(null);
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
 
+  
+  // location stuff
   const [location, setLocation] = useState(null);
   const [town, setTown] = useState(null);
   const [country, setCountry] = useState(null);
@@ -45,7 +49,7 @@ export default function App() {
           });
 
           // Handle the response from the server
-          if (response.ok) {
+          if (response.status == 200) {
             // Image uploaded successfully
             console.log('Image uploaded successfully');
           } else {
@@ -128,9 +132,22 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type} ref={(ref) => {
+      <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
           setCameraRef(ref);
         }}>
+        <View style={styles.flashButtonContainer}>
+          <TouchableOpacity style={styles.flashButton} onPress={() => {
+              setFlash(
+                flash === Camera.Constants.FlashMode.off
+                  ? Camera.Constants.FlashMode.torch
+                  : Camera.Constants.FlashMode.off);
+            }}>
+            {/* <Image
+              style={styles.flashButton}
+              source={require('assets/flash.png')}
+            /> */}
+          </TouchableOpacity>
+        </View>
         <View style={styles.takeButtonContainer}>
           <TouchableOpacity style={styles.takeButton} onPress={takePicture}>
             <Text style={styles.text}>Snap!</Text>
@@ -161,6 +178,23 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+  },
+  tiny: {
+    width: 50,
+    height: 50,
+  },
+  flashButtonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64,
+  },
+  flashButton: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 50,
   },
   takeButtonContainer: {
     flex: 1,
