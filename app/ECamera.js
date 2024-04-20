@@ -1,6 +1,8 @@
 import { Camera, CameraType } from 'expo-camera';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Location from 'expo-location';
+import axios from 'axios';
 // import * as MediaLibrary from 'expo-media-library';
 
 
@@ -8,6 +10,11 @@ export default function App() {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [cameraRef, setCameraRef] = useState(null);
+
+  const [location, setLocation] = useState(null);
+  const [town, setTown] = useState(null);
+  const [country, setCountry] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
 
   const takePicture = async () => {
@@ -25,6 +32,31 @@ export default function App() {
       }
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
+      // Reverse geocoding
+      axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`)
+        .then(response => {
+          console.log(response.data);
+          setCountry(response.data.address.country);
+          setTown(response.data.address.city);
+        })
+        .catch(error => {
+          console.error('Error fetching town:', error);
+          setErrorMsg('Error fetching town');
+        });
+    })();
+  }, []);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -59,6 +91,15 @@ export default function App() {
           <TouchableOpacity style={styles.flipButton} onPress={toggleCameraType}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.location}>
+          {errorMsg ? <Text>{errorMsg}</Text> :
+            location && (
+              <>
+                <Text style={styles.text}>Location: {town || 'Loading...'}, {country || ''}</Text>
+              </>
+            )
+          }
         </View>
       </Camera>
     </View>
@@ -103,4 +144,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  location: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  }
 });
