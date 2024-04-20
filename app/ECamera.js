@@ -40,11 +40,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    width: '500px'
+    flex: 1,
   },
   camera: {
-    height: '300px',
-    width: '300px'
+    flex: 1,
   },
   buttonContainer: {
     flex: 1,
