@@ -2,6 +2,8 @@ import { Camera, CameraType } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 // import * as MediaLibrary from 'expo-media-library';
+import axios from 'axios';
+
 
 
 export default function App() {
@@ -17,11 +19,36 @@ export default function App() {
         // Save the picture to the device's media library
         // await MediaLibrary.saveToLibraryAsync(uri); // uncomment if you want every pic to be saved to device library
         console.log(uri);
-        alert('Picture saved to your photos :3');
+        alert('Uploaded :3');
         // get the data from the photo
         const result = await fetch(`file://${uri}`)
         const data = await result.blob();
         console.log(data);
+        // send the data to the server
+        const formData = new FormData();
+        formData.append('photo', {
+          uri: uri,
+          type: 'image/jpeg',
+          name: 'photo.jpg',
+        });
+        try {
+          const response = await axios.post('https://a5fc-164-67-154-29.ngrok-free.app/pic', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          // Handle the response from the server
+          if (response.ok) {
+            // Image uploaded successfully
+            console.log('Image uploaded successfully');
+          } else {
+            // Error uploading image
+            console.error('Error uploading image');
+          }
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
       }
     }
   };
