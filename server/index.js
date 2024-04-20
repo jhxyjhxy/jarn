@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { authenticateUser } = require('./middleware');
 const { connectDB, readUsers, signup, login} = require('./mongo');
@@ -15,6 +16,10 @@ connectDB();
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 // Define routes
 app.get('/', (req, res) => {
@@ -81,32 +86,20 @@ app.get('/users', async (req, res) => {
 
 // example generates generic story
 app.get('/gemini', async (req, res) => {
-  const reqBody = {
-    "contents": [{
-      "parts": [{
-        "text": "Write a story about a magic backpack."
-      }]
-    }]
-  };
-  axios.post(`${config.geminiUrl}?key=${process.env.GOOGLE_API_KEY}`, reqBody)
-    .then(geminiRes => {
-      res.send(geminiRes.data)
-    });
+  const prompt = "Write a story about a magic backpack."
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  const text = response.text();
+  res.send(text);
 });
 
 // example generates story about param topic
 app.get('/gemini/:topic', async (req, res) => {
-  const reqBody = {
-    "contents": [{
-      "parts": [{
-        "text": `Write a story about ${req.params.topic}.`
-      }]
-    }]
-  };
-  axios.post(`${config.geminiUrl}?key=${process.env.GOOGLE_API_KEY}`, reqBody)
-    .then(geminiRes => {
-      res.send(geminiRes.data)
-    });
+  const prompt = `Write a story about ${req.params.topic}`
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  const text = response.text();
+  res.send(text);
 });
 
 // Start the server
