@@ -1,10 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import ECamera from "./ECamera";
 
 export default function App() {
   return (
+    // <ECamera/>
     <View style={styles.container}>
-      <Text>Welcome to NatureQuest!</Text>
+      {/* <Text>Welcome to NatureQuest!</Text> */}
+      <ECamera/>
       <StatusBar style="auto" />
     </View>
   );
