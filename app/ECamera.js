@@ -1,6 +1,7 @@
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import axios from 'axios';
 // import * as MediaLibrary from 'expo-media-library';
@@ -135,37 +136,41 @@ export default function App() {
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
           setCameraRef(ref);
         }}>
-        <View style={styles.flashButtonContainer}>
-          <TouchableOpacity style={styles.flashButton} onPress={() => {
+        <View style={styles.buttonContainer}>
+
+          {/* <View style={styles.location}>
+            {errorMsg ? <Text>{errorMsg}</Text> :
+              location && (
+                <>
+                  <Text style={styles.text}>Location: {town || 'Loading...'}, {country || ''}</Text>
+                </>
+              )
+            }
+          </View> */}
+
+          <TouchableOpacity style={styles.button} onPress={() => {
               setFlash(
                 flash === Camera.Constants.FlashMode.off
                   ? Camera.Constants.FlashMode.torch
                   : Camera.Constants.FlashMode.off);
             }}>
-            {/* <Image
-              style={styles.flashButton}
-              source={require('assets/flash.png')}
-            /> */}
+            <Image
+              style={styles.tiny}
+              source={require('./assets/flash.png')}
+            />
           </TouchableOpacity>
-        </View>
-        <View style={styles.takeButtonContainer}>
-          <TouchableOpacity style={styles.takeButton} onPress={takePicture}>
-            <Text style={styles.text}>Snap!</Text>
+          <TouchableOpacity style={styles.button} onPress={takePicture}>
+            <Image
+                style={styles.nottiny}
+                source={require('./assets/snap.png')}
+              />
           </TouchableOpacity>
-        </View>
-        <View style={styles.flipButtonContainer}>
-          <TouchableOpacity style={styles.flipButton} onPress={toggleCameraType}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.location}>
-          {errorMsg ? <Text>{errorMsg}</Text> :
-            location && (
-              <>
-                <Text style={styles.text}>Location: {town || 'Loading...'}, {country || ''}</Text>
-              </>
-            )
-          }
+          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+            <Image
+                style={styles.kindoftiny}
+                source={require('./assets/flip.png')}
+              />
+            </TouchableOpacity>
         </View>
       </Camera>
     </View>
@@ -175,52 +180,40 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
   },
   camera: {
     flex: 1,
+    height: '80%',
   },
   tiny: {
-    width: 50,
-    height: 50,
+    width: 20,
+    height: 40,
   },
-  flashButtonContainer: {
-    flex: 1,
+  kindoftiny: {
+    width: 40,
+    height: 40,
+  },
+  nottiny: {
+    width: 70,
+    height: 70,
+  },
+  buttonContainer: {
     flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  flashButton: {
-    flex: 1,
-    alignSelf: 'flex-end',
+    display: 'flex',
+    justifyContent: 'baseline',
+    backgroundColor: '#C5E99B',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 50,
+    width: '100%',
+    height: '15%',
+    position: 'absolute',
+    padding: 15,
+    bottom: 0,
   },
-  takeButtonContainer: {
+  button: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  takeButton: {
-    flex: 1,
-    alignSelf: 'flex-end',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 50,
-  },
-  flipButtonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  flipButton: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 50,
   },
   text: {
     fontSize: 24,
