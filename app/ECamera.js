@@ -20,6 +20,9 @@ export default function App() {
   
   const [isVisible, setIsVisible] = useState(false);
 
+  // challenge stuff
+  const [challenge, setChallenge] = useState(null);
+
   // navigating between camera and preview
   const navigation = useNavigation();
   
@@ -78,6 +81,70 @@ export default function App() {
     }
   };
 
+  const getChallenge = async () => {
+    try {
+      console.log('hello!');
+      const response = await axios.get(`${CONFIG.serverURL}challenge`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        },
+      });
+      console.log('Challenge:', response.data);
+      setChallenge(response.data);
+    } catch (error) {
+      console.error('Error getting the challenge data:', error);
+    }
+  }
+
+  useEffect(() => {
+    getChallenge();
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
+      // Reverse geocoding
+      axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`)
+        .then((response) => {
+          console.log(response.data);
+          setCountry(response.data.address.country);
+          setTown(response.data.address.city);
+
+          try {
+            axios.post('https://a5fc-164-67-154-29.ngrok-free.app/location', 
+              response.data
+            ).then(
+              (response2) => {
+                console.log(response2.status);
+                if (response2.status == 200) {
+                  // Image uploaded successfully
+                  console.log('Location data sent successfully');
+                } 
+                else {
+                  // Error uploading image
+                  console.error('Error sending location data');
+                }
+              } 
+            );
+          } 
+          
+          catch (error) {
+            console.error('Error uploading image:', error);
+          }
+
+        })
+        .catch(error => {
+          console.error('Error fetching town:', error);
+          setErrorMsg('Error fetching town');
+        });
+    })();
+  }, []);
+
   if (!permission) {
     // Camera permissions are still loading
     return <View />;
@@ -110,7 +177,7 @@ export default function App() {
       </View>
       {isVisible && (
         <View style={styles.challengeDesc}>
-          <Text style={styles.text}>Today's Challenge:{"\n\n"}awesome challenge alert!</Text>
+          <Text style={styles.text}>{"\n" + challenge.title + "\n\n" + challenge.description}</Text>
         </View>
       )}
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
@@ -229,7 +296,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#273C2C',
     textAlign: 'center',
