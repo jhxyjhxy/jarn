@@ -7,10 +7,9 @@ import * as SplashScreen from "expo-splash-screen";
 import LoginScreen from "./LoginScreen";
 import SignupScreen from "./Signup";
 import HomeScreen from "./Home";
+import SettingsScreen from "./Settings";
 import { AuthProvider } from "./AuthContext";
 import ECamera from "./ECamera";
-import Signup from "./Signup";
-import Preview from "./Preview";
 import CommunityScreen from "./CommunityScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -66,8 +65,7 @@ export default function App() {
               component={ECamera}
               options={styles.container}
             />
-            {/* <Stack.Screen name="Recap" component={Recap} options={styles.header} />
-            <Stack.Screen name="Stats" component={Stats} options={styles.header} /> */}
+            <Stack.Screen name="settings" component={SettingsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>

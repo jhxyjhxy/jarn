@@ -88,7 +88,7 @@ export default function HomeScreen({navigation}) {
                         style={styles.friends}
                     />  
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('settings')}>
                     <Image
                         source={require('./assets/settingsbtn.png')}
                         style={styles.settings}
@@ -106,8 +106,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#C5E99B',
         alignItems: 'center',
-        // paddingTop: 30
-        // justifyContent: 'center',
       },
     logo: {
         width: 375, height:375,
