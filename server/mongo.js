@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require("bcryptjs");
+const { generateChallenge } = require('./gemini');
 require('dotenv').config();
 
 // Define the User schema
@@ -105,16 +106,16 @@ const challengeSchema = new mongoose.Schema({
     }
   };
 
-  const updateChallenge = async(location, time, title, description) => {
-    
-        const update = new Challenges({
-            location,
-            time, 
-            title,
-            description
-        });
+const updateChallenge = async (location, time, title, description) => {
+  const update = new Challenges({
+    location,
+    time,
+    title,
+    description
+  });
+
     try {
-        await update.save();
+      return await update.save();
     } catch (err) {
         return console.log(err);
     }
@@ -201,18 +202,77 @@ const login = async (username, password) => {
       return console.log(err);
     }
     if (!existingUser) {
-      console.log('User not found:', error);
-      throw error;
+      console.log('User not found:');
     }
     const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
     console.log(isPasswordCorrect);
     if (!isPasswordCorrect) {
-      console.log('Incorrect Password:', error);
-      throw error;
+      console.log('Incorrect Password:');
     }
     return existingUser;
   };
 
+const getCurrentChallenge = async (location) => {
+  // Find out the most recent time a challenge was released
+  const mostRecentChallenge = await Challenges.findOne()
+    .sort({ time: -1 })
+    .exec();
+  const mostRecentTime = mostRecentChallenge ? mostRecentChallenge.time : new Date();
+
+  // Find out the most challenge for current location
+  const mostRecentLocalChallenge = await Challenges.findOne({ location })
+    .sort({ time: -1 })
+    .exec();
+
+  if (!mostRecentLocalChallenge || mostRecentLocalChallenge.time < mostRecentTime) {
+    // generate a new challenge for this location
+    return makePendingChallenge(location, mostRecentTime);
+  } else {
+    // return most most recent, update to date challenge
+    return mostRecentLocalChallenge;
+  }
+}
+
+const getUserLocation = async (id) => {
+  const user = User.findById(id);
+  if (user) {
+    return user.location;
+  } else {
+    throw new Error(`No user with id ${id}`);
+  }
+};
+
+const broadcastNewChallenges = async () => {
+  const time = new Date();
+
+  const locations = await Location.distinct('location');
+
+  locations.forEach(location => {
+    makePendingChallenge(location, time);
+  });
+}
+
+// calls the generation of a new challenge, returns pending one in the mean time
+const makePendingChallenge = async (location, time) => {
+  const pendingChallenge = await updateChallenge(location, time, 'pending', 'pending');
+
+  populatePendingChallenge();
+
+  return pendingChallenge;
+}
+
+// schedule populating of a pending challenge
+const populatePendingChallenge = async (pendingChallenge) => {
+  const { location, time } = pendingChallenge;
+  const previousChallenges = await Challenges.find({ location });
+
+  const text = generateChallenge(location, previousChallenges);
+  const { title, description } = JSON.parse(text);
+
+  Challenges.findByIdAndUpdate(pendingChallenge._id, {
+    '$set': { title, description }
+  })
+};
 
 
 module.exports = {
@@ -224,5 +284,7 @@ module.exports = {
   uploadPhotoUrl,
   User,
   Photo,
-  updateLocation
+  updateLocation,
+  getCurrentChallenge,
+  getUserLocation
 };

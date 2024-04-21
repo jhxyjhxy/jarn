@@ -5,10 +5,10 @@ const config = require('./config');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation } = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation, getUserLocation, getCurrentChallenge } = require('./mongo');
+const { model } = require('./gemini');
 require('dotenv').config();
 
 // Create an Express app
@@ -33,10 +33,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest", systemInstruction: { parts: [{ text: "respond in spanish" }] } });
 
 // Define routes
 app.get('/', (req, res) => {
@@ -184,6 +180,17 @@ app.post('/pic', upload.single('photo'), (req, res) => {
     message: 'File uploaded successfully',
     filename: req.file.filename,
   });
+});
+
+app.get('/challenge', authenticateUser, async (req, res) => {
+  try {
+    const location = await getUserLocation(req.user._id);
+    const challenge = await getCurrentChallenge(location);
+    res.json(challenge);
+  } catch (error) {
+    console.error('Error getting current challenge:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 // Start the server
