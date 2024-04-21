@@ -32,6 +32,7 @@ export default function LoginScreen({ navigation }) {
     // Normally, you would send the username and password to a server for authentication
     // This is a basic alert for demonstration purposes
     Alert.alert('Login Successful', `Welcome, ${username}!`);
+    navigation.navigate('home');
   };
 
   return (

@@ -2,7 +2,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Image } from 'expo-image';
 
-export default function Home({navigation}) {
+export default function HomeScreen({navigation}) {
     return (
         <View style={styles.container}>
             <View>  

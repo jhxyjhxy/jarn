@@ -13,8 +13,6 @@ import Signup from "./Signup";
 import Preview from "./Preview";
 import CommunityScreen from "./CommunityScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import HomeScreen from "./Home";
-
 
 const Stack = createNativeStackNavigator();
 
@@ -52,7 +50,6 @@ export default function App() {
             <Stack.Screen name="signup" component={SignupScreen} />
             <Stack.Screen name="home" component={HomeScreen} />
             <Stack.Screen name="community" component={CommunityScreen} />
-            <Stack.Screen name="home" component={HomeScreen} />
             <Stack.Screen
               name="camera"
               component={ECamera}
