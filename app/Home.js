@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
     const [location, setLocation] = useState(null);
     const [town, setTown] = useState(null);
     const [country, setCountry] = useState(null);
