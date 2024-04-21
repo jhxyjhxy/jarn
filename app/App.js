@@ -17,7 +17,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  //let pushToken = null;
   useEffect(() => {
+    /*const fetchToken = async () => {
+      const token = await registerForPushNotificationsAsync();
+      console.log("Push Token: ", pushToken);
+    };*/
+    //egisterForPushNotificationsAsync();
     const prepare = async () => {
       // keep splash screen visible
       await SplashScreen.preventAutoHideAsync();
@@ -30,6 +36,7 @@ export default function App() {
       await SplashScreen.hideAsync();
     };
     prepare();
+    //fetchToken();
   }, []);
 
   return (
@@ -60,6 +67,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>
+      
     </GestureHandlerRootView>
   );
 }
