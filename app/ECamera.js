@@ -42,7 +42,6 @@ export default function App() {
         // navigate to results page
         setPhotoUri(uri);
         console.log('before preview: ' + photoUri);
-        navigation.navigate('preview', { photoUri: uri});
 
         // get the data from the photo
         const result = await fetch(`file://${uri}`)
@@ -69,6 +68,8 @@ export default function App() {
           if (response.status == 200) {
             // Image uploaded successfully
             console.log('Image uploaded successfully');
+            // navigate to community page
+            navigation.navigate('community');
           } else {
             // Error uploading image
             console.error('Error uploading image');
@@ -152,14 +153,15 @@ export default function App() {
       <View style={styles.challengeContainer}>
         <TouchableOpacity style={styles.challengeTitle} onPress={toggleChallengeDescription}>
             <Image
-                style={styles.titleImg}
-                source={require('./assets/challengetitle.png')}
-              />
+              style={styles.titleImg}
+              source={require('./assets/challengetitle.png')}
+            />
+            <Text style={styles.titleText}>Press me for a challenge!</Text>
           </TouchableOpacity>
       </View>
       {isVisible && (
         <View style={styles.challengeDesc}>
-          <Text style={styles.text}>CHALLENGE DESCRIPTION</Text>
+          <Text style={styles.text}>Today's Challenge:{"\n\n"}awesome challenge alert!</Text>
         </View>
       )}
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
@@ -222,7 +224,8 @@ const styles = StyleSheet.create({
     top: 15,
     left: 40,
     padding: 10,
-    zIndex: 99,
+    zIndex: 3,
+    // backgroundColor: 'blue',
   },
   titleImg: {
     width: 285,
@@ -242,6 +245,7 @@ const styles = StyleSheet.create({
     top: 200,
     left: 40,
     backgroundColor: 'white',
+    padding: 20,
   },
   descriptionImg: {
     width: 200,
@@ -276,9 +280,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#273C2C',
+    textAlign: 'center',
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#273C2C',
+    textAlign: 'center',
+    position: 'absolute',
+    top: '35%',
+    left: '20%',
+    zIndex: 99,
   },
   location: {
     flex: 1, 
