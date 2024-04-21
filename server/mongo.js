@@ -9,6 +9,16 @@ const userSchema = new mongoose.Schema({
   email: String,
 });
 
+const locationSchema = new mongoose.Schema({
+    username: String,
+    location: String,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      }
+});
+
 // Define the Photo schema
 const photoSchema = new mongoose.Schema({
     title: String,
@@ -25,8 +35,58 @@ const photoSchema = new mongoose.Schema({
     },
   });
   
+  
+
+const challengeSchema = new mongoose.Schema({
+    location: {
+        type: String,
+        required: true
+    }, 
+    time: {
+        type: Date,
+        required: true
+    },
+    title: 
+    {
+        type: String,
+        required: true
+    }, 
+    description:{
+        type: String,
+        required: true
+    }
+});
+
   // Create the Photo model
   const Photo = mongoose.model('Photo', photoSchema);
+
+  const Location = mongoose.model('Location', locationSchema);
+
+  const updateLocation = async (location, userId) => {
+    try { 
+        let username = await User.findById(userId);
+        let existingLocation = await Location.findOne({ username });
+
+        if (existingLocation) {
+          // If a location record exists, update the location
+          existingLocation.location = location;
+          await existingLocation.save();
+        } else {
+          // If no location record exists, create a new one
+          const newLocation = new Location({
+            username,
+            location,
+            userId
+          });
+          await newLocation.save();
+        }
+    } catch (error) {
+        console.error('Error uploading Location:', error);
+        throw error;
+    }
+  }
+
+  const Challenges = mongoose.model('Challenge', challengeSchema);
   
   const uploadPhotoUrl = async (title, description, imageUrl, userId) => {
     try {
@@ -44,7 +104,21 @@ const photoSchema = new mongoose.Schema({
       throw error;
     }
   };
-  
+
+  const updateChallenge = async(location, time, title, description) => {
+    
+        const update = new Challenges({
+            location,
+            time, 
+            title,
+            description
+        });
+    try {
+        await update.save();
+    } catch (err) {
+        return console.log(err);
+    }
+  }
 
 // Create the User model
 const User = mongoose.model('User', userSchema);
@@ -73,6 +147,17 @@ const readUsers = async () => {
     throw error;
   }
 };
+
+const readPhotos = async () => {
+  try {
+    // Find all photos
+    const photos = await Photo.find();
+    return photos;
+  } catch (error) {
+    console.error('Error reading photos:', error);
+    // throw error;
+  }
+}
 
 const signup = async (username, password, email) => {
     //console.log("test", req.body);
@@ -133,8 +218,11 @@ const login = async (username, password) => {
 module.exports = {
   connectDB,
   readUsers,
-    signup, 
-    login,
-    uploadPhotoUrl,
-    User
+  readPhotos,
+  signup,
+  login,
+  uploadPhotoUrl,
+  User,
+  Photo,
+  updateLocation
 };
