@@ -6,6 +6,7 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 import { CONFIG } from './config';
 import { AuthContext } from './AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 export default function App() {
   // camera stuff
