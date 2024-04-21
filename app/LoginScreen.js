@@ -23,7 +23,8 @@ export default function LoginScreen({ navigation }) {
 
     axios.post(`${CONFIG.serverURL}login`, body)
       .then(response => {
-        const token = response.data;
+        const token = response.data.token;
+        console.log(token);
         login(token);
       })
 

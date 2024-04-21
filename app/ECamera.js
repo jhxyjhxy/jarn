@@ -1,10 +1,11 @@
 import { Camera, CameraType } from 'expo-camera';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { CONFIG } from './config';
+import { AuthContext } from './AuthContext';
 
 export default function App() {
   // camera stuff
@@ -19,6 +20,13 @@ export default function App() {
   const [town, setTown] = useState(null);
   const [country, setCountry] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  const toggleChallengeDescription = () => {
+    setIsVisible(!isVisible);
+  }
+  // token
+  const { authToken } = useContext(AuthContext);
 
 
   const takePicture = async () => {
@@ -38,10 +46,13 @@ export default function App() {
           type: 'image/jpeg',
           name: 'photo.jpg',
         });
+        formData.append('title', 'A Cool Challenge');
+        formData.append('description', 'Do something really cool to complete this challenge');
         try {
-          const response = await axios.post(`${CONFIG.serverURL}pic`, formData, {
+          const response = await axios.post(`${CONFIG.serverURL}photos`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${authToken}`
             },
           });
 
@@ -127,20 +138,33 @@ export default function App() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
 
-  // function toggleModal() {
-
-  // }
-
   return (
     <View style={styles.container}>
       <View style={styles.challengeContainer}>
-        <TouchableOpacity style={styles.challengeTitle} onPress={takePicture}>
+        <TouchableOpacity style={styles.challengeTitle} onPress={toggleChallengeDescription}>
             <Image
                 style={styles.titleImg}
                 source={require('./assets/challengetitle.png')}
               />
           </TouchableOpacity>
       </View>
+      {/* <View>
+        <TouchableOpacity style={styles.challengeDesc} onPress={toggleChallengeDescription}>
+            <Image
+              style={styles.descriptionImg}
+              source={require('./assets/challengedescription.png')}
+            />
+        </TouchableOpacity>
+      </View> */}
+      {isVisible && (
+        <View style={styles.challengeDesc}>
+          {/* <Image
+            style={styles.descriptionImg}
+            source={require('./assets/challengedescription.png')}
+          /> */}
+          <Text style={styles.text}>CHALLENGE DESCRIPTION</Text>
+        </View>
+      )}
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
           setCameraRef(ref);
         }}>
@@ -208,8 +232,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    position: 'absolute',
-    top: 30,
+    // position: 'absolute',
+    top: 15,
     left: 40,
     padding: 10,
     zIndex: 99,
@@ -221,6 +245,21 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
     height: '50%',
+  },
+  challengeDesc: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '80%',
+    height: 400,
+    position: 'absolute',
+    zIndex: 99,
+    top: 200,
+    left: 40,
+    backgroundColor: 'white',
+  },
+  descriptionImg: {
+    width: 200,
+    height: 300,
   },
   tiny: {
     width: 20,
