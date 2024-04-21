@@ -1,7 +1,7 @@
-# naturequest
+# NatureQuest
 
 ## Welcome!
-We made naturequest with the goal of helping people get outside more. Every day, a notification is sent out to users with a new challenge to take pictures with certain items outdoors. 
+We made NatureQuest with the goal of helping people get outside more. Every day, a notification is sent out to users with a new challenge to take pictures with certain items outdoors. 
 
 After taking your picture, see your what your friends did that day too!
 
