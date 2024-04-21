@@ -18,7 +18,7 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    Alert.alert(CONFIG.serverURL, 'hey')
+    // Alert.alert(CONFIG.serverURL, 'hey')
 
     const body = { username, password };
     console.log(body)
