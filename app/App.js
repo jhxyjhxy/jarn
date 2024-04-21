@@ -5,7 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
 import LoginScreen from "./LoginScreen";
-import Home from "./Home";
+import SignupScreen from "./Signup";
+import HomeScreen from "./Home";
 import { AuthProvider } from "./AuthContext";
 import ECamera from "./ECamera";
 import Signup from "./Signup";
@@ -47,6 +48,8 @@ export default function App() {
               options={styles.container}
             /> */}
             <Stack.Screen name="login" component={LoginScreen} />
+            <Stack.Screen name="signup" component={SignupScreen} />
+            <Stack.Screen name="home" component={HomeScreen} />
             <Stack.Screen name="community" component={CommunityScreen} />
             <Stack.Screen
               name="camera"

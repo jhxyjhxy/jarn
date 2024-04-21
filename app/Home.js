@@ -2,7 +2,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Image } from 'expo-image';
 
-export default function App() {
+export default function Home({navigation}) {
     return (
         <View style={styles.container}>
             <View>  
@@ -12,13 +12,13 @@ export default function App() {
                 /> 
             </View>
             <View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('camera')}>
                     <Image
                         source={require('./assets/challengebtn.png')}
                         style={styles.challenge}
                     />  
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('community')}>
                     <Image
                         source={require('./assets/friendsbtn.png')}
                         style={styles.friends}
