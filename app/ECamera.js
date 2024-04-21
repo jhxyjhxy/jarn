@@ -4,6 +4,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import axios from 'axios';
+import { CONFIG } from './config';
 
 export default function App() {
   // camera stuff
@@ -38,7 +39,7 @@ export default function App() {
           name: 'photo.jpg',
         });
         try {
-          const response = await axios.post('https://a5fc-164-67-154-29.ngrok-free.app/pic', formData, {
+          const response = await axios.post(`${CONFIG.serverURL}pic`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
