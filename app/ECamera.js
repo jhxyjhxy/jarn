@@ -69,7 +69,7 @@ export default function App() {
             // Image uploaded successfully
             console.log('Image uploaded successfully');
             // navigate to community page
-            // navigation.navigate('preview', { photoUri: uri});
+            navigation.navigate('community');
           } else {
             // Error uploading image
             console.error('Error uploading image');
