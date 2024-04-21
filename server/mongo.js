@@ -234,6 +234,9 @@ const getCurrentChallenge = async (location) => {
   if (!mostRecentLocalChallenge || mostRecentLocalChallenge.time < mostRecentTime) {
     // generate a new challenge for this location
     return makePendingChallenge(location, mostRecentTime);
+  } else if (mostRecentLocalChallenge.title === 'pending') {
+    // retry popoulating event
+    populatePendingChallenge(mostRecentLocalChallenge);
   } else {
     // return most most recent, update to date challenge
     return mostRecentLocalChallenge;
@@ -257,8 +260,12 @@ const broadcastNewChallenges = async () => {
 
   const locations = await Location.distinct('location');
 
-  locations.forEach(location => {
-    makePendingChallenge(location, time);
+  console.log(locations)
+
+  locations.forEach((location, index) => {
+    setTimeout(() => {
+      makePendingChallenge(location, time);
+    }, index * 2000);
   });
 }
 
@@ -273,23 +280,28 @@ const makePendingChallenge = async (location, time) => {
 
 // schedule populating of a pending challenge
 const populatePendingChallenge = async (pendingChallenge) => {
-  const { location, time, _id } = pendingChallenge;
-  const previousChallenges = await Challenges.find({ location });
+  try {
+    const { location, time, _id } = pendingChallenge;
+    const previousChallenges = await Challenges.find({ location });
 
-  const text = await generateChallenge(location, previousChallenges);
-  const jsonText = text.replace(/```/g, '').replace(/json/g, '');
-  console.log('gemini said', jsonText);
-  const { title, description } = JSON.parse(jsonText);
+    const text = await generateChallenge(location, previousChallenges);
+    const jsonText = text.replace(/```/g, '').replace(/json/g, '');
+    console.log('gemini said', jsonText);
+    const { title, description } = JSON.parse(jsonText);
 
-  console.log(`updating pending challenge ${_id}, ${location} to ${title} -- ${description}`)
+    console.log(`updating pending challenge ${_id}, ${location} to ${title} -- ${description}`)
 
-  const updatedChallenge = await Challenges.findByIdAndUpdate(
-    _id,
-    { '$set': { title, description } },
-    { new: true }
-  );
+    const updatedChallenge = await Challenges.findByIdAndUpdate(
+      _id,
+      { '$set': { title, description } },
+      { new: true }
+    );
 
-  console.log(updatedChallenge);
+    console.log(updatedChallenge);
+  } catch (error) {
+    console.error(`failed to populate pending challenge ${pendingChallenge}`)
+  }
+
 };
 
 
@@ -304,5 +316,6 @@ module.exports = {
   Photo,
   updateLocation,
   getCurrentChallenge,
-  getUserLocation
+  getUserLocation,
+  broadcastNewChallenges
 };

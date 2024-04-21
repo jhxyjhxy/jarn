@@ -7,7 +7,7 @@ const multer = require('multer');
 const path = require('path');
 
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation, getUserLocation, getCurrentChallenge } = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation, getUserLocation, getCurrentChallenge, broadcastNewChallenges } = require('./mongo');
 const { model } = require('./gemini');
 require('dotenv').config();
 
@@ -199,6 +199,11 @@ app.get('/challenge', authenticateUser, async (req, res) => {
     console.error('Error getting current challenge:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+app.get('/refresh', async (req, res) => {
+  broadcastNewChallenges();
+  res.send('Refreshed challenges at' + new Date().toLocaleString());
 });
 
 // Start the server
