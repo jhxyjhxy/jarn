@@ -92,7 +92,7 @@ const challengeSchema = new mongoose.Schema({
   
   const uploadPhotoUrl = async (title, description, imageUrl, userId) => {
     try {
-      const userLocation = await Location.findOne({ userId });
+      const userLocation = await getUserLocation(userId);
 
     if (!userLocation) {
       throw new Error('User location not found');
@@ -250,7 +250,7 @@ const getUserLocation = async (userId) => {
     return location.location;
   } else {
     console.log('User has no saved location, returning default')
-    return 'San Luis Obispo, United States'
+    return 'Los Angeles, United States'
     // throw new Error(`No user with id ${id}`);
   }
 };

@@ -207,7 +207,7 @@ app.get('/refresh', async (req, res) => {
 });
 
 app.get('/user/:id', async (req, res) => {
-  const { username } = await getUserById(req.params.id);
+  const { username } = (await getUserById(req.params.id)) ?? { username: 'unknown' };
   res.json({ username });
 })
 
