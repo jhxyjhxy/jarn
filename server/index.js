@@ -58,6 +58,7 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await login(username, password);
     //console.log('hi', user);
+    console.log('logging in');
     if (user) {
       const token = jwt.sign({id: user._id, username: user.username }, process.env.JWT_SECRET);
       res.json({ message: 'Login successful', token });
