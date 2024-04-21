@@ -35,6 +35,28 @@ const photoSchema = new mongoose.Schema({
     },
   });
   
+  
+
+const challengeSchema = new mongoose.Schema({
+    location: {
+        type: String,
+        required: true
+    }, 
+    time: {
+        type: Date,
+        required: true
+    },
+    title: 
+    {
+        type: String,
+        required: true
+    }, 
+    description:{
+        type: String,
+        required: true
+    }
+});
+
   // Create the Photo model
   const Photo = mongoose.model('Photo', photoSchema);
 
@@ -63,6 +85,8 @@ const photoSchema = new mongoose.Schema({
         throw error;
     }
   }
+
+  const Challenges = mongoose.model('Challenge', challengeSchema);
   
   const uploadPhotoUrl = async (title, description, imageUrl, userId) => {
     try {
@@ -80,7 +104,21 @@ const photoSchema = new mongoose.Schema({
       throw error;
     }
   };
-  
+
+  const updateChallenge = async(location, time, title, description) => {
+    
+        const update = new Challenges({
+            location,
+            time, 
+            title,
+            description
+        });
+    try {
+        await update.save();
+    } catch (err) {
+        return console.log(err);
+    }
+  }
 
 // Create the User model
 const User = mongoose.model('User', userSchema);
@@ -185,5 +223,6 @@ module.exports = {
   login,
   uploadPhotoUrl,
   User,
-  Photo
+  Photo,
+  updateLocation
 };

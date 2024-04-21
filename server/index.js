@@ -8,7 +8,7 @@ const path = require('path');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos } = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation } = require('./mongo');
 require('dotenv').config();
 
 // Create an Express app
@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest", systemInstruction: { parts: [{ text: "respond in spanish" }] } });
 
 // Define routes
 app.get('/', (req, res) => {
