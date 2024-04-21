@@ -1,8 +1,70 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Image } from 'expo-image';
+import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
-export default function Home({navigation}) {
+export default function HomeScreen() {
+    const [location, setLocation] = useState(null);
+    const [town, setTown] = useState(null);
+    const [country, setCountry] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
+
+    const { authToken } = useContext(AuthContext);
+    useEffect(() => {
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
+    
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation(location);
+    
+          // Reverse geocoding
+          axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`)
+            .then((response) => {
+              console.log(response.data);
+              setCountry(response.data.address.country);
+              setTown(response.data.address.city);
+    
+              try {
+                axios.post(`${CONFIG.serverURL}location`, 
+                  response.data, {
+                    headers: {
+                      'Authorization': `Bearer ${authToken}`
+                    },
+                  }
+                ).then(
+                  (response2) => {
+                    console.log(response2.status);
+                    if (response2.status == 200) {
+                      // Image uploaded successfully
+                      console.log('Location data sent successfully');
+                    } 
+                    else {
+                      // Error uploading image
+                      console.error('Error sending location data');
+                    }
+                  } 
+                );
+              } 
+              
+              catch (error) {
+                console.error('Error uploading image:', error);
+              }
+    
+            })
+            .catch(error => {
+              console.error('Error fetching town:', error);
+              setErrorMsg('Error fetching town');
+            });
+        })();
+      }, []);
+  
+
+
     return (
         <View style={styles.container}>
             <View>  
@@ -34,6 +96,8 @@ export default function Home({navigation}) {
         </View>
     )
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
