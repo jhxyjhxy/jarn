@@ -4,9 +4,6 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import axios from 'axios';
-// import * as MediaLibrary from 'expo-media-library';
-
-
 
 export default function App() {
   // camera stuff
@@ -27,8 +24,6 @@ export default function App() {
     if (cameraRef) {
       const { uri } = await cameraRef.takePictureAsync();
       if (uri) {
-        // Save the picture to the device's media library
-        // await MediaLibrary.saveToLibraryAsync(uri); // uncomment if you want every pic to be saved to device library
         console.log(uri);
         alert('Uploaded :3');
         // get the data from the photo
@@ -131,8 +126,20 @@ export default function App() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
 
+  // function toggleModal() {
+
+  // }
+
   return (
     <View style={styles.container}>
+      <View style={styles.challengeContainer}>
+        <TouchableOpacity style={styles.challengeTitle} onPress={takePicture}>
+            <Image
+                style={styles.titleImg}
+                source={require('./assets/challengetitle.png')}
+              />
+          </TouchableOpacity>
+      </View>
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
           setCameraRef(ref);
         }}>
@@ -183,9 +190,36 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
+  challengeContainer: {
+    flexDirection: 'row',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#C5E99B',
+    width: '100%',
+    height: '20%',
+    position: 'absolute',
+    padding: 15,
+    top: 0,
+    zIndex: 1,
+  },
+  challengeTitle: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    position: 'absolute',
+    top: 30,
+    left: 40,
+    padding: 10,
+    zIndex: 99,
+  },
+  titleImg: {
+    width: 285,
+    height: 130,
+  },
   camera: {
     flex: 1,
-    height: '80%',
+    height: '50%',
   },
   tiny: {
     width: 20,
@@ -218,7 +252,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   location: {
     flex: 1, 
