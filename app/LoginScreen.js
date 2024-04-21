@@ -72,10 +72,7 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
         </View>
 
-        {/* <Button title="Go to Camera" onPress={() => navigation.navigate('camera')} /> */}
-        <Button title="Go to Home Page" onPress={() => navigation.navigate('home')} />
-        {/* <Button title="Go to Community" onPress={() => navigation.navigate('community')} /> */}
-      </ImageBackground>
+        </ImageBackground>
     </View>
   );
 }
@@ -83,20 +80,12 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    height: 780,
-    width: 375
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
   },
   userinput: {
     height: 50,
     borderColor: 'gray',
     borderWidth: 1,
-    marginTop: 135,
+    marginTop: '44%',
     marginLeft: 25,
     paddingHorizontal: 10,
     backgroundColor: "#FFFFFF",
@@ -107,7 +96,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: 'gray',
     borderWidth: 1,
-    marginTop: 55,
+    marginTop: '15%',
     marginLeft: 25,
     paddingHorizontal: 10,
     backgroundColor: "#FFFFFF",
@@ -119,12 +108,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   login: {
-    width: 200, height:50,
-    marginTop: 3,
+    width: 160, 
+    height: 40,
+    marginTop: '2%',
     alignItems: 'center',
   },
   signup: {
-    width: 270, height:50,
-    marginTop: 290
+    width: 270,
+    height: 50,
+    marginTop: '80%',
   }
 });

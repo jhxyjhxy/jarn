@@ -47,7 +47,11 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <NavigationContainer>
-          <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+        >
             {/* <Stack.Screen
               name="nature quest"
               component={Signup}

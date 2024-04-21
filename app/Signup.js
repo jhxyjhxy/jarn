@@ -10,7 +10,6 @@ export default function App({navigation}) {
     const { login, authToken } = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
 
     const handleSignup = () => {
         console.log("inhandleSignup");
@@ -57,12 +56,6 @@ export default function App({navigation}) {
                 value={password}
                 onChangeText={setPassword}
                 />
-                <TextInput
-                style={styles.useremail}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                />
                 <TouchableOpacity onPress={handleSignup}>
                     <Image
                         source={require('./assets/createbtn.png')}
@@ -76,49 +69,35 @@ export default function App({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      // justifyContent: 'center',
-    //   alignItems: 'center',
-      height: 780,
-      width: 375
-    },
-    userinput: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginTop: 145,
-        marginLeft: 22,
-        paddingHorizontal: 10,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 10, 
-        width: '80%', // Adjust width to fit screen
-      },
-      userpass: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginTop: 47,
-        marginLeft: 22,
-        paddingHorizontal: 10,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 10,
-        width: '80%', // Adjust width to fit screen
-      },
-      useremail: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginTop: 47,
-        marginLeft: 22,
-        paddingHorizontal: 10,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 10,
-        width: '80%', // Adjust width to fit screen
-      },
-      signup: {
-        width: 220, height:50,
-        marginTop: 30,
-        marginLeft: 22,
-      }
+  container: {
+    flex: 1,
+  },
+  userinput: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: '44%',
+    marginLeft: 25,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10, 
+    width: '80%', // Adjust width to fit screen
+  },
+  userpass: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: '15%',
+    marginLeft: 25,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    width: '80%', // Adjust width to fit screen
+  },
+  signup: {
+    width: '42%',
+    height: '20%',
+    marginTop: '4%',
+    marginLeft: '6%',
+  }
 });
