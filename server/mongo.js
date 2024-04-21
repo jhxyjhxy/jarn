@@ -74,6 +74,17 @@ const readUsers = async () => {
   }
 };
 
+const readPhotos = async () => {
+  try {
+    // Find all photos
+    const photos = await Photo.find();
+    return photos;
+  } catch (error) {
+    console.error('Error reading photos:', error);
+    // throw error;
+  }
+}
+
 const signup = async (username, password, email) => {
     //console.log("test", req.body);
     //const {username, email, password} = req.body;
@@ -133,8 +144,10 @@ const login = async (username, password) => {
 module.exports = {
   connectDB,
   readUsers,
-    signup, 
-    login,
-    uploadPhotoUrl,
-    User
+  readPhotos,
+  signup,
+  login,
+  uploadPhotoUrl,
+  User,
+  Photo
 };

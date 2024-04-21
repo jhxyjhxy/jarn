@@ -8,7 +8,7 @@ const path = require('path');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login, uploadPhotoUrl} = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos } = require('./mongo');
 require('dotenv').config();
 
 // Create an Express app
@@ -38,6 +38,8 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 // Define routes
 app.get('/', (req, res) => {
   res.send('Hello, World!');
+  console.log('ptryign to get photos')
+  readPhotos().then(photos => console.log(photos))
 });
 
 //PHOTOS
@@ -49,6 +51,15 @@ app.post('/photos', [authenticateUser, upload.single('photo')], async (req, res)
     console.log('Uploaded field name:', req.file.fieldname, req.file.filename);
     const uploadedPhoto = await uploadPhotoUrl(title, description, imageUrl, req.user._id);
     res.json({ message: 'Photo URL uploaded successfully', photo: uploadedPhoto });
+  } catch (error) {
+    console.error('Error uploading photo URL:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.get('/photos', [authenticateUser], (req, res) => {
+  try {
+    readPhotos().then(photos => res.json(photos))
   } catch (error) {
     console.error('Error uploading photo URL:', error);
     res.status(500).json({ message: 'Internal server error' });

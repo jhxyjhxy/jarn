@@ -4,11 +4,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
-import ECamera from "./ECamera";
-import Signup from "./Signup";
 import LoginScreen from "./LoginScreen";
 import Home from "./Home";
 import { AuthProvider } from "./AuthContext";
+import ECamera from "./ECamera";
+import Signup from "./Signup";
+import Preview from "./Preview";
+import CommunityScreen from "./CommunityScreen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 const Stack = createNativeStackNavigator();
@@ -34,26 +37,28 @@ export default function App() {
     //   <ECamera/>
     //   <StatusBar style="auto" />
     // </View>
-    <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          {/* <Stack.Screen
-            name="nature quest"
-            component={Signup}
-            options={styles.container}
-          /> */}
-          <Stack.Screen name="login" component={LoginScreen} options={styles.container}/>
-          <Stack.Screen name="home" component={Home} options={styles.container}/>
-          <Stack.Screen
-            name="camera"
-            component={ECamera}
-            options={styles.container}
-          />
-          {/* <Stack.Screen name="Recap" component={Recap} options={styles.header} />
-          <Stack.Screen name="Stats" component={Stats} options={styles.header} /> */}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            {/* <Stack.Screen
+              name="nature quest"
+              component={Signup}
+              options={styles.container}
+            /> */}
+            <Stack.Screen name="login" component={LoginScreen} />
+            <Stack.Screen name="community" component={CommunityScreen} />
+            <Stack.Screen
+              name="camera"
+              component={ECamera}
+              options={styles.container}
+            />
+            {/* <Stack.Screen name="Recap" component={Recap} options={styles.header} />
+            <Stack.Screen name="Stats" component={Stats} options={styles.header} /> */}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
 
