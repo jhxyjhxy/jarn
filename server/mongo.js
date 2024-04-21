@@ -304,6 +304,10 @@ const populatePendingChallenge = async (pendingChallenge) => {
 
 };
 
+const getUserById = (id) => {
+  return User.findById(id);
+}
+
 
 module.exports = {
   connectDB,
@@ -317,5 +321,6 @@ module.exports = {
   updateLocation,
   getCurrentChallenge,
   getUserLocation,
-  broadcastNewChallenges
+  broadcastNewChallenges,
+  getUserById
 };

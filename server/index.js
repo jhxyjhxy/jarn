@@ -7,7 +7,7 @@ const multer = require('multer');
 const path = require('path');
 
 const { authenticateUser } = require('./middleware');
-const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation, getUserLocation, getCurrentChallenge, broadcastNewChallenges } = require('./mongo');
+const { connectDB, readUsers, signup, login, uploadPhotoUrl, readPhotos, updateLocation, getUserLocation, getCurrentChallenge, broadcastNewChallenges, getUserById } = require('./mongo');
 const { model } = require('./gemini');
 require('dotenv').config();
 
@@ -205,6 +205,11 @@ app.get('/refresh', async (req, res) => {
   broadcastNewChallenges();
   res.send('Refreshed challenges at' + new Date().toLocaleString());
 });
+
+app.get('/user/:id', async (req, res) => {
+  const { username } = await getUserById(req.params.id);
+  res.json({ username });
+})
 
 // Start the server
 const PORT = process.env.PORT || 3000;
