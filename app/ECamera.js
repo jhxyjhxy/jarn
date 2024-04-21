@@ -28,6 +28,7 @@ export default function App() {
   
   const toggleChallengeDescription = () => {
     setIsVisible(!isVisible);
+    getChallenge();
   }
   // token
   const { authToken } = useContext(AuthContext);
@@ -97,6 +98,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    console.log('useeffect running');
     getChallenge();
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -105,8 +107,8 @@ export default function App() {
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      // let location = await Location.getCurrentPositionAsync({});
+      // setLocation(location);
 
       // Reverse geocoding
       axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`)
@@ -177,7 +179,7 @@ export default function App() {
       </View>
       {isVisible && (
         <View style={styles.challengeDesc}>
-          <Text style={styles.text}>{"\n" + challenge.title + "\n\n" + challenge.description}</Text>
+          <Text style={styles.text}>{"\n" + challenge?.title + "\n\n" + challenge?.description}</Text>
         </View>
       )}
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {

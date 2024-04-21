@@ -110,6 +110,7 @@ app.post('/login', async (req, res) => {
     //console.log('hi', user);
     if (user) {
       const token = jwt.sign({id: user._id, username: user.username }, process.env.JWT_SECRET);
+      console.log('user logged in', username)
       res.json({ message: 'Login successful', token });
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
@@ -185,8 +186,11 @@ app.post('/pic', upload.single('photo'), (req, res) => {
 
 app.get('/challenge', authenticateUser, async (req, res) => {
   try {
+    console.log('getting challenge for user', req.user.username)
     const location = await getUserLocation(req.user._id);
+    console.log('user loc', location);
     const challenge = await getCurrentChallenge(location);
+    console.log(challenge);
     res.json(challenge);
   } catch (error) {
     console.error('Error getting current challenge:', error);

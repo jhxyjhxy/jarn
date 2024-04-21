@@ -240,12 +240,15 @@ const getCurrentChallenge = async (location) => {
   }
 }
 
-const getUserLocation = async (id) => {
-  const user = User.findById(id);
-  if (user) {
-    return user.location;
+const getUserLocation = async (userId) => {
+  const location = await Location.findOne({ userId })
+  if (location) {
+    console.log('found location', location)
+    return location.location;
   } else {
-    throw new Error(`No user with id ${id}`);
+    console.log('User has no saved location, returning default')
+    return 'San Luis Obispo, United States'
+    // throw new Error(`No user with id ${id}`);
   }
 };
 
@@ -263,22 +266,30 @@ const broadcastNewChallenges = async () => {
 const makePendingChallenge = async (location, time) => {
   const pendingChallenge = await updateChallenge(location, time, 'pending', 'pending');
 
-  populatePendingChallenge();
+  populatePendingChallenge(pendingChallenge);
 
   return pendingChallenge;
 }
 
 // schedule populating of a pending challenge
 const populatePendingChallenge = async (pendingChallenge) => {
-  const { location, time } = pendingChallenge;
+  const { location, time, _id } = pendingChallenge;
   const previousChallenges = await Challenges.find({ location });
 
-  const text = generateChallenge(location, previousChallenges);
-  const { title, description } = JSON.parse(text);
+  const text = await generateChallenge(location, previousChallenges);
+  const jsonText = text.replace(/```/g, '').replace(/json/g, '');
+  console.log('gemini said', jsonText);
+  const { title, description } = JSON.parse(jsonText);
 
-  Challenges.findByIdAndUpdate(pendingChallenge._id, {
-    '$set': { title, description }
-  })
+  console.log(`updating pending challenge ${_id}, ${location} to ${title} -- ${description}`)
+
+  const updatedChallenge = await Challenges.findByIdAndUpdate(
+    _id,
+    { '$set': { title, description } },
+    { new: true }
+  );
+
+  console.log(updatedChallenge);
 };
 
 
