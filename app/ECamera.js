@@ -19,7 +19,11 @@ export default function App() {
   const [town, setTown] = useState(null);
   const [country, setCountry] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-
+  const [isVisible, setIsVisible] = useState(false);
+  
+  const toggleChallengeDescription = () => {
+    setIsVisible(!isVisible);
+  }
 
   const takePicture = async () => {
     if (cameraRef) {
@@ -127,20 +131,33 @@ export default function App() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
 
-  // function toggleModal() {
-
-  // }
-
   return (
     <View style={styles.container}>
       <View style={styles.challengeContainer}>
-        <TouchableOpacity style={styles.challengeTitle} onPress={takePicture}>
+        <TouchableOpacity style={styles.challengeTitle} onPress={toggleChallengeDescription}>
             <Image
                 style={styles.titleImg}
                 source={require('./assets/challengetitle.png')}
               />
           </TouchableOpacity>
       </View>
+      {/* <View>
+        <TouchableOpacity style={styles.challengeDesc} onPress={toggleChallengeDescription}>
+            <Image
+              style={styles.descriptionImg}
+              source={require('./assets/challengedescription.png')}
+            />
+        </TouchableOpacity>
+      </View> */}
+      {isVisible && (
+        <View style={styles.challengeDesc}>
+          {/* <Image
+            style={styles.descriptionImg}
+            source={require('./assets/challengedescription.png')}
+          /> */}
+          <Text style={styles.text}>CHALLENGE DESCRIPTION</Text>
+        </View>
+      )}
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
           setCameraRef(ref);
         }}>
@@ -208,8 +225,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    position: 'absolute',
-    top: 30,
+    // position: 'absolute',
+    top: 15,
     left: 40,
     padding: 10,
     zIndex: 99,
@@ -221,6 +238,21 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
     height: '50%',
+  },
+  challengeDesc: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '80%',
+    height: 400,
+    position: 'absolute',
+    zIndex: 99,
+    top: 200,
+    left: 40,
+    backgroundColor: 'white',
+  },
+  descriptionImg: {
+    width: 200,
+    height: 300,
   },
   tiny: {
     width: 20,
