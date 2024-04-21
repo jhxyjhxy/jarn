@@ -1,10 +1,11 @@
 import { Camera, CameraType } from 'expo-camera';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { CONFIG } from './config';
+import { AuthContext } from './AuthContext';
 
 export default function App() {
   // camera stuff
@@ -24,6 +25,9 @@ export default function App() {
   const toggleChallengeDescription = () => {
     setIsVisible(!isVisible);
   }
+  // token
+  const { authToken } = useContext(AuthContext);
+
 
   const takePicture = async () => {
     if (cameraRef) {
@@ -42,10 +46,13 @@ export default function App() {
           type: 'image/jpeg',
           name: 'photo.jpg',
         });
+        formData.append('title', 'A Cool Challenge');
+        formData.append('description', 'Do something really cool to complete this challenge');
         try {
-          const response = await axios.post(`${CONFIG.serverURL}pic`, formData, {
+          const response = await axios.post(`${CONFIG.serverURL}photos`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${authToken}`
             },
           });
 
