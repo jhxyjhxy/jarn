@@ -8,6 +8,7 @@ import Polaroid from './polaroid'; // Import the Polaroid component
 export default function CommunityScreen({ navigation }) {
   const { authToken } = useContext(AuthContext);
   const [photos, setPhotos] = useState([]);
+  const [username, setUserName] = useState([]);
 
   useEffect(() => {
     if (photos.length > 0) return;
@@ -15,8 +16,12 @@ export default function CommunityScreen({ navigation }) {
       headers: {
         'Authorization': `Bearer ${authToken}`
       },
-    }).then(({ data }) => {
+    }).then( async ({ data }) => {
       setPhotos(data);
+      console.log(data[0]);
+      const user = await Promise.all(data.map(photo => axios.get(`${CONFIG.serverURL}user/${photo.uploadedBy}`).then(response => response.data.username)));
+      setUserName(user);
+      console.log(user);
     });
   }, []);
 
@@ -25,10 +30,11 @@ export default function CommunityScreen({ navigation }) {
       <FlatList
         data={photos}
         keyExtractor={photo => photo._id}
-        renderItem={({ item: {title, description, imageUrl} }) => (
+        renderItem={({ item: {title, description, imageUrl}, index }) => (
           <Polaroid
             topText={title}
             bottomText={description}
+            userText = {username?.[index]}
             imageUrl={`${CONFIG.serverURL}${imageUrl}`}
           />
         )}

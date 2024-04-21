@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 
-const Polaroid = ({ imageUrl, topText, bottomText }) => {
-    console.log('got to polaroid');
+const Polaroid = ({ imageUrl, topText, bottomText, userText}) => {
+    // console.log('got to polaroid');
   return (
     <View style={styles.container}>
       <View style={styles.polaroid}>
         <Text style={styles.topText}>{topText}</Text>
         <Image source={{ uri: imageUrl }} style={styles.image} />
         <Text style={styles.bottomText}>{bottomText}</Text>
+        <Text style={styles.userText}>{"\n-" + userText}</Text>
       </View>
     </View>
   );
@@ -47,6 +48,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     maxWidth: 300,
   },
+  userText: {
+    fontsize: 18,
+    textAlign: 'center',
+  }
 });
 
 export default Polaroid;

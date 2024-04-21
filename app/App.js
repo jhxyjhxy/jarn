@@ -12,6 +12,8 @@ import { AuthProvider } from "./AuthContext";
 import ECamera from "./ECamera";
 import CommunityScreen from "./CommunityScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 
 const Stack = createNativeStackNavigator();
 
