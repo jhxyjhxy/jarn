@@ -44,8 +44,9 @@ app.get('/', (req, res) => {
 //Location
 app.post('/location', authenticateUser, async (req, res) => {
   try {
+    console.log('location', req.body);
     const {location} = req.body;
-    console.log(location);
+    console.log(location, req.user._id);
     const update = await updateLocation(location, req.user._id);
     res.json({ message: 'Successfully saved location' });
   } catch (err) {

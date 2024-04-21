@@ -1,8 +1,10 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Image } from 'expo-image';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
+import * as Location from 'expo-location';
+import {CONFIG} from './config';
 
 export default function HomeScreen({navigation}) {
     const [location, setLocation] = useState(null);
@@ -28,10 +30,11 @@ export default function HomeScreen({navigation}) {
               console.log(response.data);
               setCountry(response.data.address.country);
               setTown(response.data.address.city);
-    
+              console.log("country", response.data.address.country);
+              console.log("town", response.data.address.city);
               try {
                 axios.post(`${CONFIG.serverURL}location`, 
-                  response.data, {
+                 {'location': `${response.data.address.city},${response.data.address.country}`}, {
                     headers: {
                       'Authorization': `Bearer ${authToken}`
                     },
@@ -64,8 +67,6 @@ export default function HomeScreen({navigation}) {
       }, []);
   
 
-
-export default function HomeScreen({navigation}) {
     return (
         <View style={styles.container}>
             <View>  

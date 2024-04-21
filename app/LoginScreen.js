@@ -13,6 +13,7 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = () => {
     // Basic validation
     if (username.trim() === '' || password.trim() === '') {
+
       Alert.alert('Error', 'Please enter both username and password');
       return;
     }
@@ -57,7 +58,7 @@ export default function LoginScreen({ navigation }) {
         {/* <Button title="Login" onPress={handleLogin} /> */}
         {/* <Text>TOKEN: {authToken}</Text> */}
         <View style={styles.buttons}>    
-        <TouchableOpacity onPress={() => {handleLogin}}>
+        <TouchableOpacity onPress={handleLogin}>
             <Image
                 source={require('./assets/loginbtn.png')}
                 style={styles.login}

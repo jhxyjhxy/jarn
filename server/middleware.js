@@ -4,7 +4,7 @@ const { User } = require('./mongo');
 const authenticateUser = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    console.log(token);
+    console.log('to', token);
     if (!token) {
       return res.status(401).json({ message: 'Authentication token missing' });
     }
@@ -12,7 +12,7 @@ const authenticateUser = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded);
     //console.log();
-    console.log(User);
+    //console.log(User);
 
     const user = await User.findById(decoded.id);
 
