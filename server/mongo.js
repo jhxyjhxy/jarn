@@ -9,6 +9,16 @@ const userSchema = new mongoose.Schema({
   email: String,
 });
 
+const locationSchema = new mongoose.Schema({
+    username: String,
+    location: String,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      }
+});
+
 // Define the Photo schema
 const photoSchema = new mongoose.Schema({
     title: String,
@@ -27,6 +37,32 @@ const photoSchema = new mongoose.Schema({
   
   // Create the Photo model
   const Photo = mongoose.model('Photo', photoSchema);
+
+  const Location = mongoose.model('Location', locationSchema);
+
+  const updateLocation = async (location, userId) => {
+    try { 
+        let username = await User.findById(userId);
+        let existingLocation = await Location.findOne({ username });
+
+        if (existingLocation) {
+          // If a location record exists, update the location
+          existingLocation.location = location;
+          await existingLocation.save();
+        } else {
+          // If no location record exists, create a new one
+          const newLocation = new Location({
+            username,
+            location,
+            userId
+          });
+          await newLocation.save();
+        }
+    } catch (error) {
+        console.error('Error uploading Location:', error);
+        throw error;
+    }
+  }
   
   const uploadPhotoUrl = async (title, description, imageUrl, userId) => {
     try {
@@ -136,5 +172,6 @@ module.exports = {
     signup, 
     login,
     uploadPhotoUrl,
-    User
+    User,
+    updateLocation
 };
