@@ -25,6 +25,7 @@ const photoSchema = new mongoose.Schema({
     title: String,
     description: String,
     imageUrl: String,
+    location: String,
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -91,10 +92,16 @@ const challengeSchema = new mongoose.Schema({
   
   const uploadPhotoUrl = async (title, description, imageUrl, userId) => {
     try {
+      const userLocation = await Location.findOne({ userId });
+
+    if (!userLocation) {
+      throw new Error('User location not found');
+    }
       const newPhoto = new Photo({
         title,
         description,
         imageUrl,
+        userLocation,
         uploadedBy: userId,
         uploadedAt: new Date(),
       });
