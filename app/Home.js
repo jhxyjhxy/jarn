@@ -34,7 +34,7 @@ export default function HomeScreen({navigation}) {
               console.log("town", response.data.address.city);
               try {
                 axios.post(`${CONFIG.serverURL}location`, 
-                 {'location': `${response.data.address.city},${response.data.address.country}`}, {
+                    { 'location': `${response.data.address.city}, ${response.data.address.country}` }, {
                     headers: {
                       'Authorization': `Bearer ${authToken}`
                     },
