@@ -153,9 +153,10 @@ export default function App() {
       <View style={styles.challengeContainer}>
         <TouchableOpacity style={styles.challengeTitle} onPress={toggleChallengeDescription}>
             <Image
-                style={styles.titleImg}
-                source={require('./assets/challengetitle.png')}
-              />
+              style={styles.titleImg}
+              source={require('./assets/challengetitle.png')}
+            />
+            <Text style={styles.titleText}>Press me for a challenge!</Text>
           </TouchableOpacity>
       </View>
       {isVisible && (
@@ -223,7 +224,8 @@ const styles = StyleSheet.create({
     top: 15,
     left: 40,
     padding: 10,
-    zIndex: 99,
+    zIndex: 3,
+    // backgroundColor: 'blue',
   },
   titleImg: {
     width: 285,
@@ -282,6 +284,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#273C2C',
     textAlign: 'center',
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#273C2C',
+    textAlign: 'center',
+    position: 'absolute',
+    top: '35%',
+    left: '20%',
+    zIndex: 99,
   },
   location: {
     flex: 1, 
