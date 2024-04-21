@@ -4,10 +4,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
-import ECamera from "./ECamera";
-import Signup from "./Signup";
 import LoginScreen from "./LoginScreen";
 import { AuthProvider } from "./AuthContext";
+import ECamera from "./ECamera";
+import Signup from "./Signup";
+import Preview from "./Preview";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,8 +47,7 @@ export default function App() {
             component={ECamera}
             options={styles.container}
           />
-          {/* <Stack.Screen name="Recap" component={Recap} options={styles.header} />
-          <Stack.Screen name="Stats" component={Stats} options={styles.header} /> */}
+          <Stack.Screen name="preview" component={Preview} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

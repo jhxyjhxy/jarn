@@ -5,6 +5,7 @@ import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { CONFIG } from './config';
+import { useNavigation } from '@react-navigation/native';
 
 export default function App() {
   // camera stuff
@@ -12,7 +13,7 @@ export default function App() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [cameraRef, setCameraRef] = useState(null);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-
+  const [photoUri, setPhotoUri] = useState(null);
   
   // location stuff
   const [location, setLocation] = useState(null);
@@ -20,6 +21,9 @@ export default function App() {
   const [country, setCountry] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  // navigating between camera and preview
+  const navigation = useNavigation();
   
   const toggleChallengeDescription = () => {
     setIsVisible(!isVisible);
@@ -30,7 +34,12 @@ export default function App() {
       const { uri } = await cameraRef.takePictureAsync();
       if (uri) {
         console.log(uri);
-        alert('Uploaded :3');
+        
+        // navigate to results page
+        setPhotoUri(uri);
+        console.log('before preview: ' + photoUri);
+        navigation.navigate('preview', { photoUri: uri});
+
         // get the data from the photo
         const result = await fetch(`file://${uri}`)
         const data = await result.blob();
@@ -141,20 +150,8 @@ export default function App() {
               />
           </TouchableOpacity>
       </View>
-      {/* <View>
-        <TouchableOpacity style={styles.challengeDesc} onPress={toggleChallengeDescription}>
-            <Image
-              style={styles.descriptionImg}
-              source={require('./assets/challengedescription.png')}
-            />
-        </TouchableOpacity>
-      </View> */}
       {isVisible && (
         <View style={styles.challengeDesc}>
-          {/* <Image
-            style={styles.descriptionImg}
-            source={require('./assets/challengedescription.png')}
-          /> */}
           <Text style={styles.text}>CHALLENGE DESCRIPTION</Text>
         </View>
       )}
@@ -162,17 +159,6 @@ export default function App() {
           setCameraRef(ref);
         }}>
         <View style={styles.buttonContainer}>
-
-          {/* <View style={styles.location}>
-            {errorMsg ? <Text>{errorMsg}</Text> :
-              location && (
-                <>
-                  <Text style={styles.text}>Location: {town || 'Loading...'}, {country || ''}</Text>
-                </>
-              )
-            }
-          </View> */}
-
           <TouchableOpacity style={styles.button} onPress={() => {
               setFlash(
                 flash === Camera.Constants.FlashMode.off
