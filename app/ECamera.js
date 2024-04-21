@@ -55,8 +55,8 @@ export default function App() {
           type: 'image/jpeg',
           name: 'photo.jpg',
         });
-        formData.append('title', 'A Cool Challenge');
-        formData.append('description', 'Do something really cool to complete this challenge');
+        formData.append('title', challenge.title);
+        formData.append('description', challenge.description);
         try {
           const response = await axios.post(`${CONFIG.serverURL}photos`, formData, {
             headers: {

@@ -82,9 +82,12 @@ app.get('/getphotos', authenticateUser, async (req, res) => {
 });
 
 //UPLOAD PHOTOS
-app.post('/photos', authenticateUser, async (req, res) => {
+app.post('/photos', [authenticateUser, upload.single('photo')], async (req, res) => {
   try {
-    const { title, description, imageUrl } = req.body;
+    const { title, description } = req.body;
+    const imageUrl = `pics/${req.file.filename}`;
+    console.log('stuff', title, description)
+    console.log('Uploaded field name:', req.file.fieldname, req.file.filename);
     const uploadedPhoto = await uploadPhotoUrl(title, description, imageUrl, req.user._id);
     res.json({ message: 'Photo URL uploaded successfully', photo: uploadedPhoto });
   } catch (error) {
