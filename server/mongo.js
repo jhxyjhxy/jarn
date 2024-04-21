@@ -159,7 +159,7 @@ const readUsers = async () => {
 const readPhotos = async () => {
   try {
     // Find all photos
-    const photos = await Photo.find();
+    const photos = await Photo.find().sort({ uploadedAt: -1 });
     return photos;
   } catch (error) {
     console.error('Error reading photos:', error);
