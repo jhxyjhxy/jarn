@@ -7,7 +7,9 @@ import * as SplashScreen from "expo-splash-screen";
 import ECamera from "./ECamera";
 import Signup from "./Signup";
 import LoginScreen from "./LoginScreen";
+import Home from "./Home";
 import { AuthProvider } from "./AuthContext";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -40,7 +42,8 @@ export default function App() {
             component={Signup}
             options={styles.container}
           /> */}
-          <Stack.Screen name="login" component={LoginScreen} />
+          <Stack.Screen name="login" component={LoginScreen} options={styles.container}/>
+          <Stack.Screen name="home" component={Home} options={styles.container}/>
           <Stack.Screen
             name="camera"
             component={ECamera}
