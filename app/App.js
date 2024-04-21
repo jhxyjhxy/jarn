@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
 import ECamera from "./ECamera";
 import Signup from "./Signup";
+import LoginScreen from "./LoginScreen";
+import { AuthProvider } from "./AuthContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,22 +32,25 @@ export default function App() {
     //   <ECamera/>
     //   <StatusBar style="auto" />
     // </View>
-    <NavigationContainer>
-      <Stack.Navigator>
-        {/* <Stack.Screen
-          name="nature quest"
-          component={Signup}
-          options={styles.container}
-        /> */}
-        <Stack.Screen
-          name="camera"
-          component={ECamera}
-          options={styles.container}
-        />
-        {/* <Stack.Screen name="Recap" component={Recap} options={styles.header} />
-        <Stack.Screen name="Stats" component={Stats} options={styles.header} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {/* <Stack.Screen
+            name="nature quest"
+            component={Signup}
+            options={styles.container}
+          /> */}
+          <Stack.Screen name="login" component={LoginScreen} />
+          <Stack.Screen
+            name="camera"
+            component={ECamera}
+            options={styles.container}
+          />
+          {/* <Stack.Screen name="Recap" component={Recap} options={styles.header} />
+          <Stack.Screen name="Stats" component={Stats} options={styles.header} /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 
