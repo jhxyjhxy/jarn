@@ -23,7 +23,8 @@ export default function LoginScreen({ navigation }) {
 
     axios.post(`${CONFIG.serverURL}login`, body)
       .then(response => {
-        const token = response.data;
+        const token = response.data.token;
+        console.log(token);
         login(token);
       })
 
@@ -54,6 +55,7 @@ export default function LoginScreen({ navigation }) {
       <Button title="Login" onPress={handleLogin} />
       <Text>TOKEN: {authToken?.token}</Text>
       <Button title="Go to Camera" onPress={() => navigation.navigate('camera')} />
+      <Button title="Go to Home Page" onPress={() => navigation.navigate('home')} />
     </View>
   );
 }
