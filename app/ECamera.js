@@ -160,7 +160,7 @@ export default function App() {
       </View>
       {isVisible && (
         <View style={styles.challengeDesc}>
-          <Text style={styles.text}>CHALLENGE DESCRIPTION</Text>
+          <Text style={styles.text}>Today's Challenge:{"\n\n"}awesome challenge alert!</Text>
         </View>
       )}
       <Camera style={styles.camera} type={type} flashMode={flash} ref={(ref) => {
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     top: 200,
     left: 40,
     backgroundColor: 'white',
+    padding: 20,
   },
   descriptionImg: {
     width: 200,
@@ -277,9 +278,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#273C2C',
+    textAlign: 'center',
   },
   location: {
     flex: 1, 
