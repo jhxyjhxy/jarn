@@ -53,9 +53,10 @@ export default function LoginScreen({ navigation }) {
       />
 
       <Button title="Login" onPress={handleLogin} />
-      <Text>TOKEN: {authToken?.token}</Text>
+      <Text>TOKEN: {authToken}</Text>
       <Button title="Go to Camera" onPress={() => navigation.navigate('camera')} />
       <Button title="Go to Home Page" onPress={() => navigation.navigate('home')} />
+      <Button title="Go to Community" onPress={() => navigation.navigate('community')} />
     </View>
   );
 }
