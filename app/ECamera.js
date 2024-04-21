@@ -42,7 +42,6 @@ export default function App() {
         // navigate to results page
         setPhotoUri(uri);
         console.log('before preview: ' + photoUri);
-        navigation.navigate('preview', { photoUri: uri});
 
         // get the data from the photo
         const result = await fetch(`file://${uri}`)
@@ -69,6 +68,8 @@ export default function App() {
           if (response.status == 200) {
             // Image uploaded successfully
             console.log('Image uploaded successfully');
+            // navigate to community page
+            // navigation.navigate('preview', { photoUri: uri});
           } else {
             // Error uploading image
             console.error('Error uploading image');
