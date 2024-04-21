@@ -2,32 +2,32 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Image } from 'expo-image';
 
-export default function App() {
+export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <View>  
                 <Image
                     source={require('./assets/naturequesttitle.png')} 
-                    style={{width: 486, height:409}}
+                    style={styles.logo}
                 /> 
             </View>
             <View>
                 <TouchableOpacity>
                     <Image
                         source={require('./assets/challengebtn.png')}
-                        style={styles.button}
+                        style={styles.challenge}
                     />  
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Image
                         source={require('./assets/friendsbtn.png')}
-                        style={{width: 200, height:45}}
+                        style={styles.friends}
                     />  
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Image
                         source={require('./assets/settingsbtn.png')}
-                        style={styles.button}
+                        style={styles.settings}
                     /> 
                 </TouchableOpacity>
             </View>
@@ -40,10 +40,24 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#C5E99B',
         alignItems: 'center',
-        paddingTop: 30
+        // paddingTop: 30
         // justifyContent: 'center',
       },
-    button: {
-        width: 200, height:50
+    logo: {
+        width: 375, height:375,
+        marginTop: 20
     },
+    challenge: {
+        width: 200, height:50,
+        marginTop: 60,
+        marginBottom: 20
+    },
+    friends: {
+        width: 200, height:45,
+        marginBottom: 25
+    },
+    settings: {
+        width: 200, height:50,
+        paddingTop: 20
+    }
 });
