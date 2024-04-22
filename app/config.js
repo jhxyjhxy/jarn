@@ -1,3 +1,3 @@
 export const CONFIG = {
-  serverURL: 'https://d2b5-164-67-70-230.ngrok-free.app/'
+  serverURL: 'https://4304-164-67-70-230.ngrok-free.app/'
 }
